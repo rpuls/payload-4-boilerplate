@@ -1,276 +1,66 @@
-import { RequiredDataFromCollectionSlug } from 'payload'
-import type { PostArgs } from './post-1'
+import type { Media } from '@/payload-types'
 
-export const post3: (args: PostArgs) => RequiredDataFromCollectionSlug<'posts'> = ({
-  heroImage,
-  blockImage,
-  author,
-}) => {
-  return {
-    slug: 'dollar-and-sense-the-financial-forecast',
-    _status: 'published',
-    authors: [author],
-    content: {
-      root: {
-        type: 'root',
-        children: [
-          {
-            type: 'block',
-            fields: {
-              id: 'c0b95a3a35552be1d84822a5',
-              blockName: 'Disclaimer',
-              blockType: 'banner',
-              content: {
-                root: {
-                  type: 'root',
-                  children: [
-                    {
-                      type: 'paragraph',
-                      children: [
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 1,
-                          mode: 'normal',
-                          style: '',
-                          text: 'Disclaimer: ',
-                          version: 1,
-                        },
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 0,
-                          mode: 'normal',
-                          style: '',
-                          text: 'This content is fabricated and for demonstration purposes only. To edit this post, ',
-                          version: 1,
-                        },
-                        {
-                          type: 'link',
-                          children: [
-                            {
-                              type: 'text',
-                              detail: 0,
-                              format: 0,
-                              mode: 'normal',
-                              style: '',
-                              text: 'navigate to the admin dashboard.',
-                              version: 1,
-                            },
-                          ],
-                          direction: 'ltr',
-                          fields: {
-                            linkType: 'custom',
-                            newTab: true,
-                            url: '/admin',
-                          },
-                          format: '',
-                          indent: 0,
-                          version: 3,
-                        },
-                      ],
-                      direction: 'ltr',
-                      format: '',
-                      indent: 0,
-                      textFormat: 1,
-                      textStyle: '',
-                      version: 1,
-                    },
-                  ],
-                  direction: 'ltr',
-                  format: '',
-                  indent: 0,
-                  version: 1,
-                },
-              },
-              style: 'info',
-            },
-            format: '',
-            version: 2,
-          },
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: "Money isn't just currency; ",
-                version: 1,
-              },
-              {
-                type: 'text',
-                detail: 0,
-                format: 2,
-                mode: 'normal',
-                style: '',
-                text: "it's a language. ",
-                version: 1,
-              },
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'Dive deep into its nuances, where strategy meets intuition in the vast sea of finance.',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: "Money, in its essence, transcends the mere concept of coins and paper notes; it becomes a profound language that speaks of value, trust, and societal structures. Like any language, it possesses intricate nuances and subtleties that require a discerning understanding. It's in these depths where the calculated world of financial strategy collides with the raw, instinctive nature of human intuition. Just as a seasoned linguist might dissect the syntax and semantics of a sentence, a financial expert navigates the vast and tumultuous ocean of finance, guided not only by logic and data but also by gut feelings and foresight. Every transaction, investment, and financial decision becomes a dialogue in this expansive lexicon of commerce and value.",
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: 'ab20dc67888df0b281f03b14',
-              blockName: '',
-              blockType: 'mediaBlock',
-              media: blockImage.id,
-            },
-            format: '',
-            version: 2,
-          },
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'Stock Market Dynamics: Bulls, Bears, and the Uncertain Middle',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'The stock market is a realm of vast opportunity but also poses risks. Discover the forces that drive market trends and the strategies employed by top traders to navigate this complex ecosystem. From market analysis to understanding investor psychology, get a comprehensive insight into the world of stocks.',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: "The stock market, often visualized as a bustling arena of numbers and ticker tapes, is as much about human behavior as it is about economics. It's a place where optimism, represented by the bullish rally, meets the caution of bearish downturns, with each vying to dictate the market's direction. But between these two extremes lies an uncertain middle ground, a zone populated by traders and investors who constantly weigh hope against fear. Successful navigation requires more than just financial acumen; it demands an understanding of collective sentiments and the ability to predict not just market movements, but also the reactions of other market participants. In this intricate dance of numbers and nerves, the most astute players are those who master both the hard data and the soft nuances of human behavior.",
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: '29a96ff97a5cb723668a0bb3',
-              blockName: 'Dynamic components',
-              blockType: 'banner',
-              content: {
-                root: {
-                  type: 'root',
-                  children: [
-                    {
-                      type: 'paragraph',
-                      children: [
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 0,
-                          mode: 'normal',
-                          style: '',
-                          text: "This content above is completely dynamic using custom layout building blocks configured in the CMS. This can be anything you'd like from rich text and images, to highly designed, complex components.",
-                          version: 1,
-                        },
-                      ],
-                      direction: 'ltr',
-                      format: '',
-                      indent: 0,
-                      textFormat: 0,
-                      textStyle: '',
-                      version: 1,
-                    },
-                  ],
-                  direction: 'ltr',
-                  format: '',
-                  indent: 0,
-                  version: 1,
-                },
-              },
-              style: 'info',
-            },
-            format: '',
-            version: 2,
-          },
-        ],
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1,
-      },
-    },
-    heroImage: heroImage.id,
-    meta: {
-      description: `Money isn't just currency; it's a language. Dive deep into its nuances, where strategy meets intuition in the vast sea of finance.`,
-      image: heroImage.id,
-      title: 'Dollar and Sense: The Financial Forecast',
-    },
-    relatedPosts: [], // this is populated by the seed script
-    title: 'Dollar and Sense: The Financial Forecast',
-  }
-}
+import type { PostContent } from './types'
+import { a, BOLD, bullet, demoDisclaimer, h, p, root, t } from './lexical'
+
+const feature = (label: string, text: string) => p(t(`${label}: `, BOLD), t(text))
+
+export const post3 = ({ heroImage }: { heroImage: Media }): PostContent => ({
+  slug: 'medusajs-2-0-game-changer',
+  title: 'Medusa.js 2.0: A Game-Changer for E-commerce',
+  heroImage: heroImage.id,
+  content: root([
+    h('h2', 'Discover the power of Medusa.js 2.0 and how it revolutionizes e-commerce development.'),
+    demoDisclaimer(),
+    p(
+      t(
+        "The e-commerce world is buzzing with excitement as Medusa.js 2.0 has officially been released! This major update brings a host of new features and improvements that are set to revolutionize how we build and manage online stores. In this post, we'll explore what's new in Medusa.js 2.0 and why it's a game-changer for developers and businesses alike.",
+      ),
+    ),
+
+    h('h2', "What's New in Medusa.js 2.0?"),
+    feature('Reworked Admin Dashboard', 'A more intuitive and visually appealing interface.'),
+    feature('Enhanced Inventory Management', 'Support for multiple warehouses.'),
+    feature('New Promotions Engine', 'More flexible and powerful discount configurations.'),
+    feature('Improved Software Architecture', 'Easier customization and feature additions.'),
+
+    h('h2', 'Why Choose Medusa.js 2.0?'),
+    p(
+      t(
+        "Medusa.js 2.0 offers substantial improvements that benefit both business operations and development processes. Whether you're managing inventory or building custom features, this update provides tools that make your e-commerce journey smoother and more efficient.",
+      ),
+    ),
+
+    h('h2', 'Deploy Medusa.js 2.0 on Railway'),
+    p(
+      t(
+        "To make it even easier to get started with Medusa.js 2.0, we've created a one-click deploy template for Railway. This template includes:",
+      ),
+    ),
+    bullet('Automatic setup', 'Storefront, Redis, and PostgreSQL database'),
+    bullet('API key sharing', 'Automatic sharing between backend and storefront'),
+    bullet(
+      'Built-in features',
+      'Internal media storage, health checks, and automatic admin user creation',
+    ),
+    p(
+      t('Ready to get started? Check out our full guide on deploying Medusa.js 2.0 on Railway: '),
+      a('Medusa.js 2.0 Deployment Guide', 'https://funkyton.com/medusajs-2-0-is-finally-here/'),
+    ),
+    p(
+      t(
+        'For those who want to dive deeper into the code, you can find our Medusa.js 2.0 boilerplate on GitHub: ',
+      ),
+      a(
+        'Medusa.js 2.0 Railway Boilerplate',
+        'https://github.com/rpuls/medusajs-2.0-for-railway-boilerplate',
+      ),
+    ),
+  ]),
+  meta: {
+    title: 'Medusa.js 2.0: A Game-Changer for E-commerce',
+    description:
+      'Discover the power of Medusa.js 2.0 and how it revolutionizes e-commerce development.',
+    image: heroImage.id,
+  },
+})

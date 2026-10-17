@@ -1,324 +1,178 @@
-import type { Media, User } from '@/payload-types'
-import { RequiredDataFromCollectionSlug } from 'payload'
+import type { Media } from '@/payload-types'
 
-export type PostArgs = {
-  heroImage: Media
-  blockImage: Media
-  author: User
-}
+import type { PostContent } from './types'
+import { a, banner, BOLD, CODE, code, demoDisclaimer, h, media, p, root, t } from './lexical'
 
-export const post1: (args: PostArgs) => RequiredDataFromCollectionSlug<'posts'> = ({
+const hierarchySnippet = `import type { CollectionConfig } from 'payload'
+
+export const Categories: CollectionConfig = {
+  slug: 'categories',
+  admin: { useAsTitle: 'title' },
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    { name: 'slug', type: 'slug', useAsSlug: 'title' },
+  ],
+  // Built-in tree: adds a \`parent\` field and a Categories tab
+  // in the admin sidebar where you can browse and rearrange it
+  hierarchy: {
+    parentFieldName: 'parent',
+    slugField: 'slug',
+  },
+}`
+
+export const post1 = ({
   heroImage,
   blockImage,
-  author,
-}) => {
-  return {
-    slug: 'digital-horizons',
-    _status: 'published',
-    authors: [author],
-    content: {
-      root: {
-        type: 'root',
-        children: [
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'Dive into the marvels of modern innovation, where the only constant is change. A journey where pixels and data converge to craft the future.',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: '7bcbb913e405bff554d59b24',
-              blockName: 'Disclaimer',
-              blockType: 'banner',
-              content: {
-                root: {
-                  type: 'root',
-                  children: [
-                    {
-                      type: 'paragraph',
-                      children: [
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 1,
-                          mode: 'normal',
-                          style: '',
-                          text: 'Disclaimer:',
-                          version: 1,
-                        },
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 0,
-                          mode: 'normal',
-                          style: '',
-                          text: ' This content is fabricated and for demonstration purposes only. To edit this post, ',
-                          version: 1,
-                        },
-                        {
-                          type: 'link',
-                          children: [
-                            {
-                              type: 'text',
-                              detail: 0,
-                              format: 0,
-                              mode: 'normal',
-                              style: '',
-                              text: 'navigate to the admin dashboard',
-                              version: 1,
-                            },
-                          ],
-                          direction: 'ltr',
-                          fields: {
-                            linkType: 'custom',
-                            newTab: true,
-                            url: '/admin',
-                          },
-                          format: '',
-                          indent: 0,
-                          version: 3,
-                        },
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 0,
-                          mode: 'normal',
-                          style: '',
-                          text: '.',
-                          version: 1,
-                        },
-                      ],
-                      direction: 'ltr',
-                      format: '',
-                      indent: 0,
-                      textFormat: 0,
-                      textStyle: '',
-                      version: 1,
-                    },
-                  ],
-                  direction: 'ltr',
-                  format: '',
-                  indent: 0,
-                  version: 1,
-                },
-              },
-              style: 'info',
-            },
-            format: '',
-            version: 2,
-          },
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'The Rise of AI and Machine Learning',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'We find ourselves in a transformative era where artificial intelligence (AI) stands at the forefront of technological evolution. The ripple effects of its advancements are reshaping industries at an unprecedented pace. No longer are businesses bound by the limitations of tedious, manual processes. Instead, sophisticated machines, fueled by vast amounts of historical data, are now capable of making decisions previously left to human intuition. These intelligent systems are not only optimizing operations but also pioneering innovative approaches, heralding a new age of business transformation worldwide. ',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'To demonstrate basic AI functionality, here is a javascript snippet that makes a POST request to a generic AI API in order to generate text based on a prompt. ',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h4',
-            version: 1,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: 'ab026dcf8015531443304eb4',
-              blockName: 'Generate Text',
-              blockType: 'code',
-              code: "async function generateText(prompt) {\n    const apiKey = 'your-api-key';\n    const apiUrl = 'https://api.example.com/generate-text';\n\n    const response = await fetch(apiUrl, {\n        method: 'POST',\n        headers: {\n            'Content-Type': 'application/json',\n            'Authorization': `Bearer ${apiKey}`\n        },\n        body: JSON.stringify({\n            model: 'text-generation-model',\n            prompt: prompt,\n            max_tokens: 50\n        })\n    });\n\n    const data = await response.json();\n    console.log(data.choices[0].text.trim());\n}\n\n// Example usage\ngenerateText(\"Once upon a time in a faraway land,\");\n",
-              language: 'javascript',
-            },
-            format: '',
-            version: 2,
-          },
-          {
-            type: 'heading',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: 'IoT: Connecting the World Around Us',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            tag: 'h2',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: "In today's rapidly evolving technological landscape, the Internet of Things (IoT) stands out as a revolutionary force. From transforming our residences with smart home systems to redefining transportation through connected cars, IoT's influence is palpable in nearly every facet of our daily lives.",
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'text',
-                detail: 0,
-                format: 0,
-                mode: 'normal',
-                style: '',
-                text: "This technology hinges on the seamless integration of devices and systems, allowing them to communicate and collaborate effortlessly. With each connected device, we move a step closer to a world where convenience and efficiency are embedded in the very fabric of our existence. As a result, we're transitioning into an era where our surroundings intuitively respond to our needs, heralding a smarter and more interconnected global community.",
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            textFormat: 0,
-            textStyle: '',
-            version: 1,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: 'ae96dc942a0390e9fc5f8830',
-              blockName: '',
-              blockType: 'mediaBlock',
-              media: blockImage.id,
-            },
-            format: '',
-            version: 2,
-          },
-          {
-            type: 'block',
-            fields: {
-              id: '2993299a98ccf86c2ca3127a',
-              blockName: 'Dynamic Components',
-              blockType: 'banner',
-              content: {
-                root: {
-                  type: 'root',
-                  children: [
-                    {
-                      type: 'paragraph',
-                      children: [
-                        {
-                          type: 'text',
-                          detail: 0,
-                          format: 0,
-                          mode: 'normal',
-                          style: '',
-                          text: "This content above is completely dynamic using custom layout building blocks configured in the CMS. This can be anything you'd like from rich text and images, to highly designed, complex components.",
-                          version: 1,
-                        },
-                      ],
-                      direction: 'ltr',
-                      format: '',
-                      indent: 0,
-                      textFormat: 0,
-                      textStyle: '',
-                      version: 1,
-                    },
-                  ],
-                  direction: 'ltr',
-                  format: '',
-                  indent: 0,
-                  version: 1,
-                },
-              },
-              style: 'info',
-            },
-            format: '',
-            version: 2,
-          },
-        ],
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1,
-      },
-    },
-    heroImage: heroImage.id,
-    meta: {
-      description:
-        'Dive into the marvels of modern innovation, where the only constant is change. A journey where pixels and data converge to craft the future.',
-      image: heroImage.id,
-      title: 'Digital Horizons: A Glimpse into Tomorrow',
-    },
-    relatedPosts: [], // this is populated by the seed script
-    title: 'Digital Horizons: A Glimpse into Tomorrow',
-  }
-}
+}: {
+  heroImage: Media
+  blockImage: Media
+}): PostContent => ({
+  slug: 'whats-new-in-payload-4',
+  title: "What's New in Payload 4",
+  heroImage: heroImage.id,
+  content: root([
+    h('h2', 'A tour of the Payload 4 features this template puts to work.'),
+    demoDisclaimer(),
+    banner('warning', [
+      p(
+        t('Payload 4 is in beta', BOLD),
+        t(
+          ' at the time of writing. APIs can still change before the stable release, so pin your versions and read the release notes before upgrading.',
+        ),
+      ),
+    ]),
+    p(
+      t(
+        'Payload 4 is the biggest release since Payload moved into Next.js. Many things you used to add with plugins or custom code now ship in the core, and a few defaults changed to be safer. This post walks through what is new, using this template as the example: every feature mentioned here is wired up and ready to try in the ',
+      ),
+      a('admin panel', '/admin'),
+      t('.'),
+    ),
+
+    h('h2', 'A redesigned admin panel'),
+    p(
+      t(
+        'The admin UI has been redesigned. SCSS is gone: the admin is styled with plain CSS and design tokens (CSS custom properties), so theming it means overriding a handful of variables instead of fighting compiled styles.',
+      ),
+    ),
+    p(
+      t('The dashboard is now '),
+      t('modular', BOLD),
+      t(
+        '. It is built from widgets that each editor can add, move and resize. Projects can register their own widgets, and this template adds a ',
+      ),
+      t('Pending comments', BOLD),
+      t(' widget so moderators see new comments the moment they sign in.'),
+    ),
+
+    h('h2', 'Organising content: hierarchy, tags and folders'),
+    p(
+      t(
+        'Nested categories used to need the nested-docs plugin. In Payload 4 any collection can become a tree with the built-in ',
+      ),
+      t('hierarchy', CODE),
+      t(
+        ' option. The categories on this site use it: Technology is the parent of Content Management, E-commerce and Self-hosting, and you can rearrange the tree from its own tab in the admin sidebar.',
+      ),
+    ),
+    code('typescript', hierarchySnippet),
+    p(
+      t('Tags are a first-class concept too. A collection with the '),
+      t('tags', CODE),
+      t(' option becomes a tag set, and '),
+      t('createTagField()', CODE),
+      t(
+        ' adds the matching field to any collection that should be tagged. Posts in this template use tags alongside categories.',
+      ),
+    ),
+    p(
+      t(
+        'Uploads get folders and a grid view, so the media library behaves more like a file browser than a long table: sort images into folders and browse them as thumbnails.',
+      ),
+    ),
+
+    h('h2', 'Built for AI agents'),
+    p(
+      t('The official '),
+      t('MCP plugin', BOLD),
+      t(
+        ' exposes your collections to AI agents and other MCP clients. Agents authenticate with a user API key and go through exactly the same access control as that user, so an agent can only do what its user is allowed to do. This template exposes posts, pages, categories, tags, media and comments at ',
+      ),
+      t('/api/mcp', CODE),
+      t(', and adds a custom tool for moderating comments.'),
+    ),
+    p(
+      t('Each collection can also carry '),
+      t('llmInstructions', CODE),
+      t(
+        ': plain-language guidance for agents, such as "save posts as drafts unless asked to publish" or "never edit the text of a visitor comment". The instructions live next to the schema, so every MCP client gets the same house rules.',
+      ),
+    ),
+
+    h('h2', 'Publishing workflow'),
+    p(
+      t(
+        'Scheduled publishing runs on the jobs queue, and the queue can run inside the server itself. On a long-running host like Railway there is no separate worker or external cron to set up: schedule a post, and it goes live on time.',
+      ),
+    ),
+    p(
+      t('Versions are on by default, and every document records who created it and who last changed it ('),
+      t('createdBy', CODE),
+      t(' and '),
+      t('updatedBy', CODE),
+      t('). Combined with drafts and live preview, editors can always see what changed, when, and by whom.'),
+    ),
+
+    h('h2', 'Safer by default'),
+    p(
+      t('The Local API now enforces access control by default: '),
+      t('overrideAccess', CODE),
+      t(' defaults to '),
+      t('false', CODE),
+      t(
+        '. Server code that should bypass access control has to say so explicitly, which removes a whole class of accidental data leaks. The seed script that created this post passes ',
+      ),
+      t('overrideAccess: true', CODE),
+      t(' on purpose, for exactly that reason.'),
+    ),
+
+    media(blockImage),
+
+    h('h2', 'Images and storage'),
+    p(
+      t('Image processing moved out of the core into '),
+      t('@payloadcms/transformer-sharp', CODE),
+      t(', and resized versions of an image are now called '),
+      t('variants', BOLD),
+      t('. Storage adapters are configured under a new top-level '),
+      t('storage', CODE),
+      t(
+        ' key instead of as plugins. This template writes uploads to local disk by default, and switches to any S3-compatible bucket (such as a Railway Bucket) when the S3 variables are set.',
+      ),
+    ),
+
+    h('h2', 'New requirements, and a second framework'),
+    p(
+      t(
+        'Payload 4 requires Node.js 24, Next.js 16.4 and TypeScript 6. Next.js is no longer the only option either: the new TanStack Start adapter lets you run Payload inside a TanStack Start app instead. This template stays on Next.js.',
+      ),
+    ),
+
+    h('h2', 'Try it yourself'),
+    p(
+      t('Everything above is live on this site. Open the '),
+      a('admin panel', '/admin'),
+      t(
+        ', browse the category tree, approve a comment from the dashboard widget, or connect an MCP client. The full source is ',
+      ),
+      a('on GitHub', 'https://github.com/rpuls/payload-4-boilerplate'),
+      t('.'),
+    ),
+  ]),
+  meta: {
+    title: "What's New in Payload 4",
+    description:
+      'A practical tour of Payload 4: the redesigned admin, dashboard widgets, nested categories, tags, folders, MCP for AI agents, scheduled publishing and safer defaults.',
+    image: heroImage.id,
+  },
+})
