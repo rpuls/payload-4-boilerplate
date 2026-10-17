@@ -3,27 +3,27 @@ import React from 'react'
 
 interface Props {
   className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
 }
 
-export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
-
+/**
+ * A self-contained wordmark (no external image). It is drawn in white like the original
+ * Payload logo; the header inverts it in light mode. Swap in your own brand here.
+ */
+export const Logo = ({ className }: Props) => {
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
-    />
+    <span
+      className={clsx(
+        'inline-flex items-center gap-2 text-white text-lg font-semibold tracking-tight',
+        className,
+      )}
+    >
+      <svg aria-hidden="true" height="28" viewBox="0 0 28 28" width="28">
+        <rect fill="none" height="24" rx="6" stroke="currentColor" strokeWidth="2.5" width="24" x="2" y="2" />
+        <path d="M9 19V9h5.5a3.5 3.5 0 0 1 0 7H9" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+      </svg>
+      <span>
+        Payload <span className="opacity-60">4</span>
+      </span>
+    </span>
   )
 }
