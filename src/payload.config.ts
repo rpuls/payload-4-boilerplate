@@ -12,6 +12,8 @@ import { Users } from "./collections/Users";
 import { Footer } from "./Footer/config";
 import { Header } from "./Header/config";
 import { plugins } from "./plugins";
+import { email } from "./config/email";
+import { storage } from "./config/storage";
 import { defaultLexical } from "@/fields/defaultLexical";
 import { getServerSideURL } from "./utilities/getURL";
 
@@ -85,9 +87,19 @@ export default buildConfig({
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),
+  email,
+  endpoints: [
+    {
+      // Used by the Railway healthcheck (see railway.json)
+      path: "/health",
+      method: "get",
+      handler: () => Response.json({ status: "ok" }),
+    },
+  ],
   globals: [Header, Footer],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
+  storage,
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
