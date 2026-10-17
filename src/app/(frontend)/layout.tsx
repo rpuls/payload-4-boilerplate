@@ -16,6 +16,10 @@ import { draftMode } from 'next/headers'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+// Every frontend route reads from the database, which is not reachable while Railway builds the app.
+// Rendering per request keeps the build database-free; cache tags still revalidate content on publish.
+export const dynamic = 'force-dynamic'
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 

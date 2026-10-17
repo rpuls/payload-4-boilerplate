@@ -1,31 +1,22 @@
-version: '3'
-
+# Local PostgreSQL for development and the Playwright e2e suite.
+# The app itself runs with `pnpm dev` on your machine (or on Railway in production).
 services:
-  payload:
-    image: node:18-alpine
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '${POSTGRES_PORT:-5432}:5432'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-payload}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
-    depends_on:
-      - mongo
-    env_file:
-      - .env
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-payload}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  data:
-  node_modules:
+  postgres_data:
