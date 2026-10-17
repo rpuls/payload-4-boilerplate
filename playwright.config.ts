@@ -1,42 +1,43 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-import 'dotenv/config'
+import { baseURL, databaseURL, payloadSecret, port } from './tests/e2e/env'
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+const slowMo = Number(process.env.PLAYWRIGHT_SLOW_MO ?? '0')
+
 export default defineConfig({
   testDir: './tests/e2e',
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+  fullyParallel: false,
+  workers: 1,
+  retries: process.env.CI ? 1 : 0,
+  timeout: 180000,
+  expect: {
+    timeout: 15000,
   },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], channel: 'chromium' },
-    },
-  ],
+  reporter: 'list',
+  use: {
+    baseURL,
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    launchOptions: slowMo > 0 ? { slowMo } : undefined,
+  },
   webServer: {
-    command: 'pnpm build && pnpm start',
-    reuseExistingServer: true,
-    timeout: 5 * 60 * 1000,
-    url: 'http://localhost:3000',
+    command: 'node ./tests/e2e/web-server.mjs',
+    url: `${baseURL}/api/health`,
+    reuseExistingServer: !process.env.CI,
+    stdout: 'pipe',
+    stderr: 'pipe',
+    env: {
+      ...process.env,
+      PORT: String(port),
+      DATABASE_URL: databaseURL,
+      PAYLOAD_SECRET: payloadSecret,
+      NEXT_PUBLIC_SERVER_URL: baseURL,
+      // Keep e2e runs local and deterministic: no bucket, no SMTP, no background job runner
+      S3_BUCKET: '',
+      SMTP_HOST: '',
+      DISABLE_JOBS_AUTORUN: 'true',
+    },
+    timeout: 600000,
   },
 })

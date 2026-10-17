@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { createTagField, type CollectionConfig } from 'payload'
 
 import {
   BlocksFeature,
@@ -32,6 +32,8 @@ export const Posts: CollectionConfig = {
     create: authenticated,
     delete: authenticated,
     read: authenticatedOrPublished,
+    // Payload 4 lets version history inherit 'read'. Keep drafts and history private.
+    readVersions: authenticated,
     update: authenticated,
   },
   // This config controls what's populated by default when a post is referenced
@@ -67,6 +69,12 @@ export const Posts: CollectionConfig = {
       }),
     useAsTitle: 'title',
   },
+  llmInstructions: [
+    'Blog posts shown under /posts on the website.',
+    'Write in a friendly, practical tone. Keep titles under 70 characters.',
+    'Always pick at least one category, add a few tags, and fill in the SEO tab (meta title, description and image).',
+    'Save as a draft unless you are explicitly asked to publish.',
+  ].join('\n'),
   fields: [
     {
       name: 'title',
@@ -133,6 +141,20 @@ export const Posts: CollectionConfig = {
             },
           ],
           label: 'Meta',
+        },
+        {
+          label: 'Comments',
+          fields: [
+            {
+              name: 'comments',
+              type: 'join',
+              collection: 'comments',
+              on: 'post',
+              admin: {
+                defaultColumns: ['content', 'status', 'createdAt'],
+              },
+            },
+          ],
         },
         {
           name: 'meta',
@@ -216,6 +238,7 @@ export const Posts: CollectionConfig = {
         },
       ],
     },
+    createTagField({ relationTo: 'tags', label: 'Tags' }),
     {
       name: 'slug',
       type: 'slug',

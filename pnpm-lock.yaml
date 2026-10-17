@@ -26,7 +26,7 @@ importers:
       '@payloadcms/plugin-form-builder':
         specifier: 4.0.0-beta.2
         version: 4.0.0-beta.2(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3)
-      '@payloadcms/plugin-nested-docs':
+      '@payloadcms/plugin-mcp':
         specifier: 4.0.0-beta.2
         version: 4.0.0-beta.2(payload@4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3))
       '@payloadcms/plugin-redirects':
@@ -108,9 +108,6 @@ importers:
         specifier: ^3.4.0
         version: 3.7.0
     devDependencies:
-      '@eslint/eslintrc':
-        specifier: ^3.2.0
-        version: 3.3.7
       '@playwright/test':
         specifier: 1.63.0
         version: 1.63.0
@@ -1481,6 +1478,14 @@ packages:
       typescript:
         optional: true
 
+  '@modelcontextprotocol/core@2.3.1':
+    resolution: {integrity: sha512-laVmIhPGpWi7rG9q+0UigblRN0Hws/Yjlb6qLFtVqryXVLkc4h+yN8z731POD2LnAGQlFe7/tXhUm7Bi0YB91g==}
+    engines: {node: '>=20'}
+
+  '@modelcontextprotocol/server@2.3.1':
+    resolution: {integrity: sha512-e59MfWuSssj6DoQ96JCTqdW1AXT5/XtnTl0WWd6MU1Ka434fFUGGosCLJbGNySDhHGvxQWoRWK137FXYFkYNWw==}
+    engines: {node: '>=20'}
+
   '@monaco-editor/loader@1.7.0':
     resolution: {integrity: sha512-gIwR1HrJrrx+vfyOhYmCZ0/JcWqG5kbfG7+d3f/C1LXk2EvzAbHSg3MQ5lO2sMlo9izoAZ04shohfKLVT6crVA==}
 
@@ -1745,8 +1750,9 @@ packages:
       react: ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
 
-  '@payloadcms/plugin-nested-docs@4.0.0-beta.2':
-    resolution: {integrity: sha512-qNHwcrlXk8f6pVPfTV1NRi6+SwucnnicExSakdRclEQu4Da/6GkuYIuWuuoK5rdMxirTDXHlKKff+DM7xKzTaQ==}
+  '@payloadcms/plugin-mcp@4.0.0-beta.2':
+    resolution: {integrity: sha512-xf3x4SBEk7o0Wuy9E48h2vGmrJYtRXeu41Ko/BzPdR156gDK55Tql+0VYwoQr5Q3ikbhhOqP+npMkmQe/9O3jQ==}
+    hasBin: true
     peerDependencies:
       payload: 4.0.0-beta.2
 
@@ -6103,6 +6109,15 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
+  '@modelcontextprotocol/core@2.3.1':
+    dependencies:
+      zod: 4.6.7
+
+  '@modelcontextprotocol/server@2.3.1':
+    dependencies:
+      '@modelcontextprotocol/core': 2.3.1
+      zod: 4.6.7
+
   '@monaco-editor/loader@1.7.0':
     dependencies:
       state-local: 1.0.7
@@ -6398,9 +6413,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@payloadcms/plugin-nested-docs@4.0.0-beta.2(payload@4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3))':
+  '@payloadcms/plugin-mcp@4.0.0-beta.2(payload@4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3))':
     dependencies:
+      '@modelcontextprotocol/server': 2.3.1
       payload: 4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3)
+      tsx: 4.23.15
 
   '@payloadcms/plugin-redirects@4.0.0-beta.2(payload@4.0.0-beta.2(graphql@16.14.2)(typescript@6.0.3))':
     dependencies:

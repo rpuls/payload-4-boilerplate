@@ -133,6 +133,8 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    tags: Tag;
+    comments: Comment;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -145,13 +147,19 @@ export interface Config {
     'payload-migrations': PayloadMigration;
     'payload-llm-instructions': PayloadLlmInstruction;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    posts: {
+      comments: 'comments';
+    };
+  };
   collectionsSelect: {
     folders: FoldersSelect<false> | FoldersSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -180,6 +188,7 @@ export interface Config {
   };
   locale: null;
   widgets: {
+    'pending-comments': PendingCommentsWidget;
     welcome: WelcomeWidget;
     collections: CollectionsWidget;
     'collection-query': CollectionQueryWidget;
@@ -244,16 +253,15 @@ export interface Folder {
 export interface User {
   id: number;
   name?: string | null;
-  createdBy?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
-  updatedBy?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
+  /**
+   * Admins manage users and site setup. Editors manage content.
+   */
+  roles?: ('admin' | 'editor')[] | null;
   updatedAt: string;
   createdAt: string;
+  apiKey?: string | null;
+  apiKeyLast4?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -342,6 +350,11 @@ export interface Post {
   content: LexicalRichText<LexicalNodes_140BC292>;
   relatedPosts?: (number | Post)[] | null;
   categories?: (number | Category)[] | null;
+  comments?: {
+    docs?: (number | Comment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   meta?: {
     title?: string | null;
     /**
@@ -358,6 +371,7 @@ export interface Post {
         name?: string | null;
       }[]
     | null;
+  _h_tags?: (number | Tag)[] | null;
   slug: string;
   createdBy?: {
     relationTo: 'users';
@@ -380,6 +394,8 @@ export interface Media {
   alt?: string | null;
   _h_folders?: (number | null) | Folder;
   caption?: LexicalRichText<LexicalNodes_AD327369> | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
   createdBy?: {
     relationTo: 'users';
     value: number | User;
@@ -488,17 +504,9 @@ export interface Media {
  */
 export interface Category {
   id: number;
+  parent?: (number | null) | Category;
   title: string;
   slug: string;
-  parent?: (number | null) | Category;
-  breadcrumbs?:
-    | {
-        doc?: (number | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   createdBy?: {
     relationTo: 'users';
     value: number | User;
@@ -509,6 +517,61 @@ export interface Category {
   } | null;
   updatedAt: string;
   createdAt: string;
+  _h_slugPath?: string | null;
+  _h_titlePath?: string | null;
+}
+/**
+ * Comments from website visitors. Approve them to make them visible on the post.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: number;
+  content: string;
+  author: {
+    name: string;
+    email: string;
+  };
+  post: number | Post;
+  status: 'pending' | 'approved' | 'spam';
+  /**
+   * Set automatically when the comment is approved.
+   */
+  publishedAt?: string | null;
+  website?: string | null;
+  createdBy?: {
+    relationTo: 'users';
+    value: number | User;
+  } | null;
+  updatedBy?: {
+    relationTo: 'users';
+    value: number | User;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  _h_tags?: (number | null) | Tag;
+  title: string;
+  slug: string;
+  createdBy?: {
+    relationTo: 'users';
+    value: number | User;
+  } | null;
+  updatedBy?: {
+    relationTo: 'users';
+    value: number | User;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  _h_slugPath?: string | null;
+  _h_titlePath?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1031,6 +1094,14 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: number | Comment;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1274,6 +1345,7 @@ export interface PostsSelect<T extends boolean = true> {
   content?: T;
   relatedPosts?: T;
   categories?: T;
+  comments?: T;
   meta?:
     | T
     | {
@@ -1289,6 +1361,7 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  _h_tags?: T;
   slug?: T;
   createdBy?: T;
   updatedBy?: T;
@@ -1304,6 +1377,8 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   _h_folders?: T;
   caption?: T;
+  prefix?: T;
+  _objectKey?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1423,17 +1498,47 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  parent?: T;
   title?: T;
   slug?: T;
-  parent?: T;
-  breadcrumbs?:
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _h_slugPath?: T;
+  _h_titlePath?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  _h_tags?: T;
+  title?: T;
+  slug?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _h_slugPath?: T;
+  _h_titlePath?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  content?: T;
+  author?:
     | T
     | {
-        doc?: T;
-        url?: T;
-        label?: T;
-        id?: T;
+        name?: T;
+        email?: T;
       };
+  post?: T;
+  status?: T;
+  publishedAt?: T;
+  website?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1445,10 +1550,12 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
-  createdBy?: T;
-  updatedBy?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
+  apiKey?: T;
+  apiKeyLast4?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1913,6 +2020,16 @@ export interface PayloadJobsStatsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pending-comments_widget".
+ */
+export interface PendingCommentsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'x-small' | 'small' | 'medium';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "welcome_widget".
  */
 export interface WelcomeWidget {
@@ -1944,6 +2061,8 @@ export interface CollectionQueryWidget {
       | 'posts'
       | 'media'
       | 'categories'
+      | 'tags'
+      | 'comments'
       | 'users'
       | 'redirects'
       | 'forms'
@@ -1977,6 +2096,8 @@ export interface ActivityWidget {
           | 'posts'
           | 'media'
           | 'categories'
+          | 'tags'
+          | 'comments'
           | 'users'
           | 'redirects'
           | 'forms'
