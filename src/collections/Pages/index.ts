@@ -26,8 +26,15 @@ export const Pages: CollectionConfig = {
     create: authenticated,
     delete: authenticated,
     read: authenticatedOrPublished,
+    // Payload 4 lets version history inherit 'read'. Keep drafts and history private.
+    readVersions: authenticated,
     update: authenticated,
   },
+  llmInstructions: [
+    'Website pages built from layout blocks. The page with slug "home" is the front page.',
+    'Prefer editing existing blocks over adding new ones, and keep the hero short.',
+    'Save as a draft unless you are explicitly asked to publish.',
+  ].join('\n'),
   // This config controls what's populated by default when a page is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
   // NOTE: the slug generic (CollectionConfig<'pages'>) is dropped to work around a TypeScript 6

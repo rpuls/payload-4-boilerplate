@@ -1,67 +1,74 @@
+import type { ServerProps } from 'payload'
+
+import { PayloadLink } from '@payloadcms/ui'
 import { Banner } from '@payloadcms/ui/elements/Banner'
 import React from 'react'
+
+import { hasRole } from '@/access/roles'
 
 import { SeedButton } from './SeedButton'
 import './index.css'
 
 const baseClass = 'before-dashboard'
 
-const BeforeDashboard: React.FC = () => {
+const BeforeDashboard: React.FC<ServerProps> = ({ user }) => {
+  const isAdmin = hasRole(user, 'admin')
+
   return (
     <div className={baseClass}>
       <Banner className={`${baseClass}__banner`} type="success">
-        <h4>Welcome to your dashboard!</h4>
+        <h4>Welcome to your Payload 4 dashboard!</h4>
       </Banner>
       Here&apos;s what to do next:
       <ul className={`${baseClass}__instructions`}>
+        {isAdmin && (
+          <li>
+            <SeedButton />
+            {' with demo posts, pages, categories, tags and comments, then '}
+            <a href="/" target="_blank">
+              visit your website
+            </a>
+            {'. Seeding replaces existing content, so only do this on a fresh site.'}
+          </li>
+        )}
         <li>
-          <SeedButton />
-          {' with a few pages, posts, and projects to jump-start your new site, then '}
-          <a href="/" target="_blank">
-            visit your website
-          </a>
-          {' to see the results.'}
+          {'Moderate visitor comments in '}
+          <PayloadLink href="/admin/collections/comments">Comments</PayloadLink>
+          {'. New comments stay hidden until you approve them.'}
         </li>
         <li>
-          {'Modify your '}
+          {'Make this dashboard yours: use '}
+          <strong>Edit</strong>
+          {' to add, move and resize widgets such as "Pending comments".'}
+        </li>
+        <li>
+          {'Connect an AI agent over MCP: create an API key on your '}
+          <PayloadLink href={`/admin/collections/users/${user?.id ?? ''}`}>account</PayloadLink>
+          {' and point your MCP client at '}
+          <code>/api/mcp</code>.
+        </li>
+        <li>
+          {'Change the '}
           <a
-            href="https://payloadcms.com/docs/configuration/collections"
+            href="https://payloadcms.com/docs/beta/configuration/collections"
             rel="noopener noreferrer"
             target="_blank"
           >
             collections
           </a>
-          {' and add more '}
-          <a
-            href="https://payloadcms.com/docs/fields/overview"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            fields
-          </a>
-          {' as needed. If you are new to Payload, we also recommend you check out the '}
-          <a
-            href="https://payloadcms.com/docs/getting-started/what-is-payload"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Getting Started
-          </a>
-          {' docs.'}
-        </li>
-        <li>
-          Commit and push your changes to the repository to trigger a redeployment of your project.
+          {' and push to GitHub. Railway rebuilds and runs your database migrations automatically.'}
         </li>
       </ul>
-      {'Pro Tip: This block is a '}
+      {'Pro tip: this block is a '}
       <a
-        href="https://payloadcms.com/docs/custom-components/overview"
+        href="https://payloadcms.com/docs/beta/custom-components/overview"
         rel="noopener noreferrer"
         target="_blank"
       >
         custom component
       </a>
-      , you can remove it at any time by updating your <strong>payload.config</strong>.
+      {'. Remove it any time in '}
+      <strong>payload.config.ts</strong>.
     </div>
   )
 }
