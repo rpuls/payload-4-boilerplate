@@ -23,8 +23,15 @@ export const commentText = 'Playwright public comment awaiting approval.'
 export const seededPosts = [
   { title: "What's New in Payload 4", slug: 'whats-new-in-payload-4' },
   { title: 'Getting Started with the Payload 4 Template', slug: 'getting-started-payload-4-template' },
-  { title: 'Medusa.js 2.0: A Game-Changer for E-commerce', slug: 'medusajs-2-0-game-changer' },
-  { title: 'Vendure: A Powerful Open-Source E-commerce Solution', slug: 'vendure-open-source-ecommerce' },
+  { title: 'Medusa 2.0 on Railway: a one-click open-source webshop', slug: 'medusa-2-railway-boilerplate' },
+  {
+    title: 'Goodbye Google Drive: a self-hosted Drive and Docs replacement',
+    slug: 'goodbye-google-drive-seafile-onlyoffice',
+  },
+  {
+    title: 'I self-hosted my password manager for 3 months. Should you?',
+    slug: 'self-hosted-password-manager-vaultwarden',
+  },
   {
     title: 'My Own Suite: the open-source app launcher for your own private cloud',
     slug: 'my-own-suite-your-own-private-cloud',
@@ -34,5 +41,5 @@ export const seededPosts = [
 // Has no seeded comments, so the test controls everything shown on it
 export const targetPost = seededPosts[0]
 // Seeded with 2 approved comments and 1 pending comment
-export const moderatedPost = seededPosts[4]
+export const moderatedPost = seededPosts[5]
 export const moderatedPostApprovedComments = 2

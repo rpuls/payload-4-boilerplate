@@ -15,6 +15,7 @@ import { post2 } from './post-2'
 import { post3 } from './post-3'
 import { post4 } from './post-4'
 import { post5 } from './post-5'
+import { post6 } from './post-6'
 import type { PostContent } from './types'
 
 // Resolved from the working directory, not import.meta.url: in production the seed runs from
@@ -53,6 +54,7 @@ const tagTitles = [
   'Open Source',
   'E-commerce',
   'Self-hosting',
+  'Privacy',
   'Tutorial',
 ] as const
 
@@ -258,30 +260,41 @@ export const seed = async ({
   const medusaPost = await createPost(post3({ heroImage: media.medusaCover }), {
     categories: ['E-commerce'],
     tags: ['E-commerce', 'Railway', 'Open Source'],
+    publishedDaysAgo: 2.5,
+  })
+
+  const seafilePost = await createPost(post4({ heroImage: media.seafileCover }), {
+    categories: ['Self-hosting'],
+    tags: ['Self-hosting', 'Open Source', 'Railway'],
     publishedDaysAgo: 2,
   })
 
-  const vendurePost = await createPost(post4({ heroImage: media.vendureCover }), {
-    categories: ['E-commerce'],
-    tags: ['E-commerce', 'Railway', 'Open Source'],
+  const vaultwardenPost = await createPost(post5({ heroImage: media.vaultwardenCover }), {
+    categories: ['Self-hosting'],
+    tags: ['Self-hosting', 'Privacy', 'Railway'],
     publishedDaysAgo: 1,
   })
 
   const mosPost = await createPost(
-    post5({
+    post6({
       heroImage: media.mosInstall,
       catalogImage: media.mosCatalog,
       privacyImage: media.mosPrivacy,
     }),
-    { categories: ['Self-hosting'], tags: ['Self-hosting', 'Open Source'], publishedDaysAgo: 0 },
+    {
+      categories: ['Self-hosting'],
+      tags: ['Self-hosting', 'Privacy', 'Open Source'],
+      publishedDaysAgo: 0,
+    },
   )
 
   const relatedPosts: [Post, Post[]][] = [
     [whatsNewPost, [gettingStartedPost, mosPost]],
-    [gettingStartedPost, [whatsNewPost, medusaPost, mosPost]],
-    [medusaPost, [vendurePost, gettingStartedPost]],
-    [vendurePost, [medusaPost, mosPost]],
-    [mosPost, [gettingStartedPost, vendurePost, whatsNewPost]],
+    [gettingStartedPost, [whatsNewPost, medusaPost]],
+    [medusaPost, [gettingStartedPost, mosPost]],
+    [seafilePost, [mosPost, vaultwardenPost]],
+    [vaultwardenPost, [mosPost, seafilePost]],
+    [mosPost, [seafilePost, vaultwardenPost, medusaPost]],
   ]
 
   for (const [post, related] of relatedPosts) {

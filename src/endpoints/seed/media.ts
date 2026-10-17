@@ -43,11 +43,26 @@ export const images = {
       caption: credit('Graphic by', 'FUNKYTON', 'https://funkyton.com/medusajs-2-0-is-finally-here/'),
     },
   },
-  vendureCover: {
-    file: 'vendure-cover.webp',
+  seafileCover: {
+    file: 'seafile-onlyoffice-cover.webp',
     data: {
-      alt: 'Vendure on Railway cover',
-      caption: credit('Graphic by', 'FUNKYTON', 'https://funkyton.com/vendure-tutorial/'),
+      alt: 'Seafile and ONLYOFFICE logos next to a private cloud file browser on desktop and phone',
+      caption: credit(
+        'Graphic by',
+        'FUNKYTON',
+        'https://funkyton.com/goodbye-google-drive-my-self-hosted-drive-and-docs-replacement/',
+      ),
+    },
+  },
+  vaultwardenCover: {
+    file: 'vaultwarden-cover.webp',
+    data: {
+      alt: 'A road leaving a night-time city under the Chrome logo, crossing a bridge to a house with Bitwarden and Vaultwarden logos under a Firefox sun',
+      caption: credit(
+        'Graphic by',
+        'FUNKYTON',
+        'https://funkyton.com/i-self-hosted-my-password-manager-for-3-months-should-you/',
+      ),
     },
   },
   mosInstall: {
