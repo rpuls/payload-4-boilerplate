@@ -36,11 +36,26 @@ export const images = {
       caption: credit('Graphic by', 'Payload', 'https://payloadcms.com/'),
     },
   },
-  medusaCover: {
-    file: 'medusa-cover.webp',
+  medusaServices: {
+    file: 'medusa-railway-services.webp',
     data: {
-      alt: 'Medusa 2.0 on Railway cover',
-      caption: credit('Graphic by', 'FUNKYTON', 'https://funkyton.com/medusajs-2-0-is-finally-here/'),
+      alt: 'A Railway project with the Medusa storefront, backend, MeiliSearch, Postgres, Redis, bucket and bucket proxy all online',
+      caption: credit(
+        'One click, seven services online. Screenshot from the',
+        'Medusa 2.0 Railway boilerplate',
+        'https://github.com/rpuls/medusajs-2.0-for-railway-boilerplate',
+      ),
+    },
+  },
+  medusaStack: {
+    file: 'medusa-railway-stack.webp',
+    data: {
+      alt: 'Architecture diagram: shoppers use the Next.js storefront, which calls the Medusa backend; the backend uses Postgres, Redis, MeiliSearch and a bucket inside one Railway project, and calls Stripe and Resend outside it',
+      caption: credit(
+        'How the services fit together. Diagram from the',
+        'Medusa 2.0 Railway boilerplate',
+        'https://github.com/rpuls/medusajs-2.0-for-railway-boilerplate',
+      ),
     },
   },
   seafileCover: {

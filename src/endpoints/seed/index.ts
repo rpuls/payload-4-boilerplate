@@ -242,7 +242,7 @@ export const seed = async ({
     })
 
   // Created one at a time and in this order on purpose: posts are listed by `-createdAt`,
-  // so the last one created (My Own Suite) appears first on /posts and on the home page.
+  // so the last one created (the Medusa store launch) appears first on /posts and on the home page.
   const whatsNewPost = await createPost(
     post1({ heroImage: media.payloadCover, blockImage: media.payloadAdminCover }),
     { categories: ['Content Management'], tags: ['Payload', 'Next.js'], publishedDaysAgo: 4 },
@@ -256,12 +256,6 @@ export const seed = async ({
       publishedDaysAgo: 3,
     },
   )
-
-  const medusaPost = await createPost(post3({ heroImage: media.medusaCover }), {
-    categories: ['E-commerce'],
-    tags: ['E-commerce', 'Railway', 'Open Source'],
-    publishedDaysAgo: 2.5,
-  })
 
   const seafilePost = await createPost(post4({ heroImage: media.seafileCover }), {
     categories: ['Self-hosting'],
@@ -284,17 +278,29 @@ export const seed = async ({
     {
       categories: ['Self-hosting'],
       tags: ['Self-hosting', 'Privacy', 'Open Source'],
+      publishedDaysAgo: 0.5,
+    },
+  )
+
+  const medusaPost = await createPost(
+    post3({
+      heroImage: media.medusaServices,
+      stackImage: media.medusaStack,
+    }),
+    {
+      categories: ['E-commerce'],
+      tags: ['E-commerce', 'Railway', 'Open Source', 'Tutorial'],
       publishedDaysAgo: 0,
     },
   )
 
   const relatedPosts: [Post, Post[]][] = [
-    [whatsNewPost, [gettingStartedPost, mosPost]],
+    [whatsNewPost, [gettingStartedPost, medusaPost]],
     [gettingStartedPost, [whatsNewPost, medusaPost]],
-    [medusaPost, [gettingStartedPost, mosPost]],
     [seafilePost, [mosPost, vaultwardenPost]],
     [vaultwardenPost, [mosPost, seafilePost]],
-    [mosPost, [seafilePost, vaultwardenPost, medusaPost]],
+    [mosPost, [medusaPost, seafilePost, vaultwardenPost]],
+    [medusaPost, [mosPost, gettingStartedPost]],
   ]
 
   for (const [post, related] of relatedPosts) {

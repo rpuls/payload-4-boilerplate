@@ -5,6 +5,7 @@ import {
   adminPassword,
   commentText,
   demoAuthorEmail,
+  featuredPost,
   moderatedPost,
   moderatedPostApprovedComments,
   seededPosts,
@@ -91,6 +92,10 @@ test('first user becomes an admin and can seed the database', async ({ browser }
 
 test('seeded posts render publicly with tags and comments', async ({ browser }) => {
   publicPage = await newPage(browser)
+
+  // The newest post is featured in the home page's "Latest posts" block
+  await publicPage.goto('/')
+  await expect(publicPage.getByText(featuredPost.title).first()).toBeVisible()
 
   await publicPage.goto('/posts')
   await expect(publicPage.getByRole('heading', { name: 'Posts' })).toBeVisible()
