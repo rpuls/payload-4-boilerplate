@@ -36,6 +36,12 @@ export const images = {
       caption: credit('Graphic by', 'Payload', 'https://payloadcms.com/'),
     },
   },
+  medusaLaunchCover: {
+    file: 'medusa-launch-cover.webp',
+    data: {
+      alt: 'Your own webshop in minutes: click Deploy template, the store is live in 3 minutes, then an AI assistant customizes an outdoor gear shop called Trailhead for your brand',
+    },
+  },
   medusaServices: {
     file: 'medusa-railway-services.webp',
     data: {

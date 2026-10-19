@@ -285,6 +285,7 @@ export const seed = async ({
   const medusaPost = await createPost(
     post3({
       heroImage: media.medusaServices,
+      coverImage: media.medusaLaunchCover,
       stackImage: media.medusaStack,
     }),
     {

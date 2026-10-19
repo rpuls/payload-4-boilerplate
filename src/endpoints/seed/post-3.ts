@@ -11,11 +11,15 @@ const medusaAIDocsURL = 'https://docs.medusajs.com/learn/introduction/build-with
 
 const prompt = (text: string) => p(t('• '), t(`“${text}”`, ITALIC))
 
+// The cover has its own headline, so it is the card and social image and opens the article.
+// The hero stays a dark screenshot, because the post title is printed on top of the hero.
 export const post3 = ({
   heroImage,
+  coverImage,
   stackImage,
 }: {
   heroImage: Media
+  coverImage: Media
   stackImage: Media
 }): PostContent => ({
   slug: 'launch-online-store-medusa-railway',
@@ -26,6 +30,7 @@ export const post3 = ({
       'h2',
       'Vibe coding a webshop from scratch is the slow way to start a business. Deploy a proven commerce engine in one click, then point your AI agent at the parts that make your store different.',
     ),
+    media(coverImage),
 
     p(
       t(
@@ -207,6 +212,6 @@ export const post3 = ({
     title: 'Launch a real online store in minutes, then let AI agents make it yours',
     description:
       "Don't vibe code a webshop from zero. Deploy a proven Medusa store on Railway in one click, then let your AI agent shape it into your business.",
-    image: heroImage.id,
+    image: coverImage.id,
   },
 })
