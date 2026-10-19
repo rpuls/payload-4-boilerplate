@@ -13,6 +13,13 @@ export const databaseURL =
   process.env.E2E_DATABASE_URL ??
   `postgres://${postgresUser}:${postgresPassword}@127.0.0.1:${postgresPort}/${postgresDb}`
 
+// Uploads go to a private MinIO bucket, the same way a Railway deploy stores them in a
+// Railway Bucket, so the e2e suite covers the storage setup production actually runs.
+export const minioPort = Number(process.env.E2E_MINIO_PORT ?? '54345')
+export const minioUser = 'payload'
+export const minioPassword = 'payload-secret'
+export const minioBucket = 'payload-e2e'
+
 export const payloadSecret = process.env.PAYLOAD_SECRET ?? 'playwright-secret'
 
 export const adminEmail = 'admin@example.com'

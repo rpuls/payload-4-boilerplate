@@ -1,6 +1,6 @@
 import type { ServerProps } from 'payload'
 
-import { PayloadLink } from '@payloadcms/ui'
+import { Button, PayloadLink } from '@payloadcms/ui'
 import { Banner } from '@payloadcms/ui/elements/Banner'
 import React from 'react'
 
@@ -19,6 +19,17 @@ const BeforeDashboard: React.FC<ServerProps> = ({ user }) => {
       <Banner className={`${baseClass}__banner`} type="success">
         <h4>Welcome to your Payload 4 dashboard!</h4>
       </Banner>
+      {/* The admin lives at /admin, so new owners easily miss that the website is at / */}
+      <Button
+        buttonStyle="primary"
+        className={`${baseClass}__visit`}
+        el="anchor"
+        newTab
+        size="large"
+        url="/"
+      >
+        Visit your website ↗
+      </Button>
       Here&apos;s what to do next:
       <ul className={`${baseClass}__instructions`}>
         {isAdmin && (
@@ -59,16 +70,18 @@ const BeforeDashboard: React.FC<ServerProps> = ({ user }) => {
           {' and push to GitHub. Railway rebuilds and runs your database migrations automatically.'}
         </li>
       </ul>
-      {'Pro tip: this block is a '}
-      <a
-        href="https://payloadcms.com/docs/beta/custom-components/overview"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        custom component
-      </a>
-      {'. Remove it any time in '}
-      <strong>payload.config.ts</strong>.
+      <p className={`${baseClass}__tip`}>
+        {'Pro tip: this block is a '}
+        <a
+          href="https://payloadcms.com/docs/beta/custom-components/overview"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          custom component
+        </a>
+        {'. Remove it any time in '}
+        <strong>payload.config.ts</strong>.
+      </p>
     </div>
   )
 }

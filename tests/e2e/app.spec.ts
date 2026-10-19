@@ -32,6 +32,26 @@ async function gotoAndHydrate(page: Page, url: string) {
   return response
 }
 
+// Scrolls through the page so lazy images load, then lists every image that failed to render
+async function brokenImages(page: Page, url: string) {
+  await page.goto(url)
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight) {
+      window.scrollTo(0, y)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+  })
+  await page.waitForLoadState('networkidle')
+
+  return page
+    .locator('img')
+    .evaluateAll((images) =>
+      (images as HTMLImageElement[])
+        .filter((image) => !image.complete || image.naturalWidth === 0)
+        .map((image) => image.currentSrc || image.src),
+    )
+}
+
 async function newPage(browser: Browser) {
   const context = await browser.newContext()
   return context.newPage()
@@ -86,6 +106,12 @@ test('first user becomes an admin and can seed the database', async ({ browser }
   // The custom Payload 4 dashboard widget is part of the default layout
   await expect(adminPage.getByText('Comments waiting for review')).toBeVisible()
 
+  // New owners land in /admin, so the dashboard links prominently to the website itself
+  await expect(adminPage.getByRole('link', { name: /visit your website/i }).first()).toHaveAttribute(
+    'href',
+    '/',
+  )
+
   await adminPage.getByRole('button', { name: /seed your database/i }).click()
   await expect(adminPage.getByText(/database seeded!/i)).toBeVisible({ timeout: 180000 })
 })
@@ -96,6 +122,11 @@ test('seeded posts render publicly with tags and comments', async ({ browser }) 
   // The newest post is featured in the home page's "Latest posts" block
   await publicPage.goto('/')
   await expect(publicPage.getByText(featuredPost.title).first()).toBeVisible()
+
+  // Seeded images render on the website, not only in the admin
+  for (const url of ['/', `/posts/${featuredPost.slug}`]) {
+    expect(await brokenImages(publicPage, url), `broken images on ${url}`).toEqual([])
+  }
 
   await publicPage.goto('/posts')
   await expect(publicPage.getByRole('heading', { name: 'Posts' })).toBeVisible()
