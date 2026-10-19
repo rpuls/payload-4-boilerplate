@@ -35,8 +35,8 @@ export const post2 = ({
     bullet('The app', 'Payload and the Next.js website in a single service, with a health check'),
     bullet('PostgreSQL', 'the database, connected through DATABASE_URL'),
     bullet(
-      'Optional: a Railway Bucket',
-      'set the S3_* variables (bucket, endpoint, access keys) and uploads go to the bucket instead of the local disk, so they survive redeploys',
+      'A Railway Bucket',
+      'private storage for uploaded images, already connected through the S3_* variables, so uploads survive redeploys',
     ),
     bullet(
       'Optional: SMTP',

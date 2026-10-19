@@ -51,6 +51,7 @@ For Payload API details, read the skill that ships with Payload: `node_modules/p
 ## E2E And App Workflow Rules
 
 - Keep the Docker-based PostgreSQL flow working for e2e tests. The e2e database runs in its own Compose project (`payload4-e2e`) and must never touch the development database.
+- Keep e2e uploads on the MinIO bucket. Production always stores media in a Railway Bucket, and the S3 adapter's file URLs carry a query string (`?prefix=media`) that local disk storage does not. Build media URLs with `getMediaUrl`, which handles both.
 - Do not break the admin onboarding flow. The first user must always become an admin.
 - Preserve the seeded-content workflow and the comment approval flow unless the task explicitly changes them.
 - Seed behavior must stay deterministic: all seed media is bundled in `src/endpoints/seed/assets`, with no network downloads.

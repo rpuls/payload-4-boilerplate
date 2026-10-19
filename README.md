@@ -65,17 +65,16 @@ It is the Payload 4 sibling of the [Payload 3 boilerplate](https://github.com/rp
 
 - **Database migrations** run automatically on every start (`payload migrate && next start`)
 - **Database-free build**: the app builds without database access, which is how Railway builds work
-- **Optional S3-compatible storage** for uploads (Railway Bucket, AWS S3, Cloudflare R2, MinIO). Without it, uploads go to local disk, which is wiped on redeploy
+- **S3-compatible storage** for uploads (Railway Bucket, AWS S3, Cloudflare R2, MinIO). The Railway template includes a private Railway Bucket, and files are served through Payload. Without a bucket, uploads go to local disk, which is wiped on redeploy
 - **Optional SMTP email** for password resets. Without it, emails are written to the log
 - **Healthcheck** at `/api/health`, used by Railway
 
 ## Railway Setup
 
-The template deploys the website and a PostgreSQL database. After the deploy:
+The template deploys the website, a PostgreSQL database and a Railway Bucket for uploads. After the deploy:
 
 1. Open `https://<your-domain>/admin` and create the first user. It becomes the admin.
 2. Click **Seed your database** on the dashboard for demo content (optional).
-3. For uploads that survive redeploys, add a Railway Bucket and set the `S3_*` variables (see below).
 
 Configuration happens in [railway.json](railway.json). `pnpm start` applies committed Payload migrations before starting Next.js. Migrations do not run during `pnpm build`, because Railway private networking is unavailable while the image builds.
 
@@ -86,7 +85,8 @@ Configuration happens in [railway.json](railway.json). `pnpm start` applies comm
 | `DATABASE_URL` | yes | PostgreSQL connection string. On Railway: `${{Postgres.DATABASE_URL}}` |
 | `PAYLOAD_SECRET` | yes | Long random string used to sign auth tokens |
 | `NEXT_PUBLIC_SERVER_URL` | yes | Public URL without trailing slash. On Railway: `https://${{RAILWAY_PUBLIC_DOMAIN}}` |
-| `S3_BUCKET`, `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | no | S3-compatible storage for uploads. Set `S3_FORCE_PATH_STYLE=true` for MinIO |
+| `PORT` | on Railway | `3000`. Must match the port the public domain targets, or Railway answers every request with "Application failed to respond" |
+| `S3_BUCKET`, `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | no | S3-compatible storage for uploads. On Railway, reference the bucket: `${{storage-bucket.BUCKET}}`, `${{storage-bucket.ENDPOINT}}` and so on. Set `S3_FORCE_PATH_STYLE=true` for MinIO |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM_ADDRESS`, `EMAIL_FROM_NAME` | no | SMTP for outgoing email |
 | `CRON_SECRET` | no | Lets an external cron call `/api/payload-jobs/run` |
 | `DISABLE_JOBS_AUTORUN` | no | Set to `true` to stop the in-process job runner |
@@ -109,6 +109,8 @@ Agents act with that user's permissions. They can draft posts and pages but cann
 5. Install dependencies: `corepack pnpm install`
 6. Run development mode: `corepack pnpm dev`, then open http://localhost:3000/admin
 
+Uploads are stored on local disk by default. To use a bucket like production does, start MinIO with `docker compose up -d minio minio-init` and fill in the MinIO values listed in `.env.example`.
+
 To run the production build locally: `corepack pnpm build && corepack pnpm start`
 
 ### Changing the schema
@@ -125,11 +127,11 @@ Commit the generated file in `src/migrations`. It runs automatically on the next
 
 The Playwright suite:
 
-1. Starts a fresh PostgreSQL container in its own Docker Compose project (`payload4-e2e`, port `54344`), so your development database is never touched
+1. Starts a fresh PostgreSQL container (port `54344`) and a private MinIO bucket (port `54345`) in their own Docker Compose project (`payload4-e2e`), so your development database is never touched and uploads go to a bucket, like on Railway
 2. Builds the app and starts it with `pnpm start`, the same way Railway does (migrations included)
 3. Creates the first admin through the onboarding UI
 4. Seeds the demo content
-5. Checks the public site, tags and comments
+5. Checks the public site, tags, comments and that every image renders
 6. Checks the security rules: no public drafts or commenter emails, no self-approved comments, the honeypot, and no demo login
 7. Submits a comment, approves it in the admin and verifies it appears
 8. Calls the MCP endpoint with a user API key
@@ -149,7 +151,7 @@ Make sure Docker is running, then:
 
 - **Database**: PostgreSQL
 - **Node.js**: 24.15 or newer
-- **Docker**: for local PostgreSQL and the e2e suite
+- **Docker**: for local PostgreSQL, the optional MinIO bucket and the e2e suite
 
 ## Useful Resources
 

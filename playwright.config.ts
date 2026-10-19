@@ -1,6 +1,15 @@
 import { defineConfig } from '@playwright/test'
 
-import { baseURL, databaseURL, payloadSecret, port } from './tests/e2e/env'
+import {
+  baseURL,
+  databaseURL,
+  minioBucket,
+  minioPassword,
+  minioPort,
+  minioUser,
+  payloadSecret,
+  port,
+} from './tests/e2e/env'
 
 const slowMo = Number(process.env.PLAYWRIGHT_SLOW_MO ?? '0')
 
@@ -33,8 +42,15 @@ export default defineConfig({
       DATABASE_URL: databaseURL,
       PAYLOAD_SECRET: payloadSecret,
       NEXT_PUBLIC_SERVER_URL: baseURL,
-      // Keep e2e runs local and deterministic: no bucket, no SMTP, no background job runner
-      S3_BUCKET: '',
+      // Uploads go to the local MinIO bucket, like production's Railway Bucket
+      S3_BUCKET: minioBucket,
+      S3_ENDPOINT: `http://127.0.0.1:${minioPort}`,
+      S3_REGION: 'us-east-1',
+      S3_ACCESS_KEY_ID: minioUser,
+      S3_SECRET_ACCESS_KEY: minioPassword,
+      // MinIO on localhost needs path-style URLs; Railway Buckets use the default virtual-hosted style
+      S3_FORCE_PATH_STYLE: 'true',
+      // Keep e2e runs local and deterministic: no SMTP, no background job runner
       SMTP_HOST: '',
       DISABLE_JOBS_AUTORUN: 'true',
     },
