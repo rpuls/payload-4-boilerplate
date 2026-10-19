@@ -6,6 +6,10 @@
   margin: 0;
 }
 
+.dashboard .before-dashboard__visit {
+  margin: 0 0 var(--spacer-4);
+}
+
 .dashboard .before-dashboard__instructions {
   list-style: decimal;
   margin-bottom: var(--spacer-2);
@@ -15,6 +19,21 @@
   width: 100%;
 }
 
-.dashboard .before-dashboard a:hover {
-  opacity: 0.85;
+/* The admin theme renders links like body text, so make them unmistakable here */
+.dashboard .before-dashboard__instructions a,
+.dashboard .before-dashboard__tip a {
+  color: var(--theme-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.dashboard .before-dashboard__instructions a:hover,
+.dashboard .before-dashboard__tip a:hover {
+  opacity: 0.75;
+}
+
+.dashboard .before-dashboard__tip {
+  margin: 0;
 }

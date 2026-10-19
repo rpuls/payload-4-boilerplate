@@ -86,6 +86,12 @@ test('first user becomes an admin and can seed the database', async ({ browser }
   // The custom Payload 4 dashboard widget is part of the default layout
   await expect(adminPage.getByText('Comments waiting for review')).toBeVisible()
 
+  // New owners land in /admin, so the dashboard links prominently to the website itself
+  await expect(adminPage.getByRole('link', { name: /visit your website/i }).first()).toHaveAttribute(
+    'href',
+    '/',
+  )
+
   await adminPage.getByRole('button', { name: /seed your database/i }).click()
   await expect(adminPage.getByText(/database seeded!/i)).toBeVisible({ timeout: 180000 })
 })
