@@ -101,11 +101,13 @@ The site exposes an MCP server at `https://<your-domain>/api/mcp`. Agents act wi
 
 ### ChatGPT (OAuth)
 
+> **Note:** the OAuth sign-in was made by Fable 5.1 for demonstration purposes only. Use it at your own risk; see the disclaimer in [src/plugins/mcp-oauth/README.md](src/plugins/mcp-oauth/README.md).
+
 1. In ChatGPT, open **Settings → Connectors** and create a custom connector (custom MCP connectors may require ChatGPT's developer mode, under **Advanced**). Enter the MCP server URL `https://<your-domain>/api/mcp` and choose **OAuth** as the authentication. Leave any client ID and secret fields empty: ChatGPT identifies itself with its client ID metadata document, or registers itself dynamically.
 2. When ChatGPT connects, it opens the site's own login page. Sign in with your normal admin or editor account.
 3. On the consent page, check who is asking and where you will be sent back to, then click **Allow**. ChatGPT now works with exactly your permissions.
 
-The same flow works for any MCP client that supports OAuth, for example the MCP Inspector. Discovery documents are served at `/.well-known/oauth-protected-resource` and `/.well-known/oauth-authorization-server`, and the authorization server lives in [src/oauth](src/oauth). It needs no configuration beyond `NEXT_PUBLIC_SERVER_URL`.
+The same flow works for any MCP client that supports OAuth, for example the MCP Inspector. Discovery documents are served at `/.well-known/oauth-protected-resource` and `/.well-known/oauth-authorization-server`, and the authorization server lives in [src/plugins/mcp-oauth](src/plugins/mcp-oauth). It needs no configuration beyond `NEXT_PUBLIC_SERVER_URL`.
 
 ### API keys
 

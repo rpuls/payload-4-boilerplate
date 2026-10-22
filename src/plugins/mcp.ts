@@ -1,42 +1,14 @@
 import { defineCollectionTool, defineTool, mcpPlugin } from '@payloadcms/plugin-mcp'
 
-import { getAuthorizedMCPWithOAuth } from '@/oauth/mcpAuth'
-
-/**
- * The OAuth bookkeeping collections are never exposed to agents, not even read-only.
- * Their access control already denies everything; this keeps the tools out of the list too.
- */
-const noMCPTools = {
-  count: false,
-  countVersions: false,
-  create: false,
-  delete: false,
-  duplicate: false,
-  find: false,
-  findDistinct: false,
-  findVersionByID: false,
-  findVersions: false,
-  getCollectionSchema: false,
-  getUploadInstructions: false,
-  restoreVersion: false,
-  update: false,
-} as const
-
 /**
  * Exposes the CMS to AI agents over MCP at /api/mcp.
  *
- * Agents authenticate as a real user, either by signing in through OAuth (ChatGPT's custom
- * connectors do this; see src/oauth) or with a user API key sent as
- * `Authorization: users API-Key <key>`. Everything they do goes through the same access control
- * as that user, and each collection's `llmInstructions` tell them how to behave.
+ * Agents authenticate as a real user with an API key (Users > your account > Enable API key) and
+ * send it as `Authorization: users API-Key <key>`. Everything they do goes through the same
+ * access control as that user, and each collection's `llmInstructions` tell them how to behave.
  */
 export const mcp = mcpPlugin({
-  overrideGetAuthorizedMCP: getAuthorizedMCPWithOAuth,
   collections: {
-    'oauth-clients': { tools: noMCPTools },
-    'oauth-authorization-codes': { tools: noMCPTools },
-    'oauth-grants': { tools: noMCPTools },
-    'oauth-tokens': { tools: noMCPTools },
     posts: {
       description: 'Blog posts shown on /posts',
       // Agents can draft and edit, but deleting content stays a human decision

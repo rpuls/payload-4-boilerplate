@@ -7,12 +7,6 @@ import { fileURLToPath } from "url";
 import { Categories } from "./collections/Categories";
 import { Comments } from "./collections/Comments";
 import { Media, mediaSharpOptions } from "./collections/Media";
-import {
-  OAuthAuthorizationCodes,
-  OAuthClients,
-  OAuthGrants,
-  OAuthTokens,
-} from "./collections/OAuth";
 import { Pages } from "./collections/Pages";
 import { Posts } from "./collections/Posts";
 import { Tags } from "./collections/Tags";
@@ -23,7 +17,6 @@ import { plugins } from "./plugins";
 import { email } from "./config/email";
 import { storage } from "./config/storage";
 import { defaultLexical } from "@/fields/defaultLexical";
-import { oauthEndpoints } from "./oauth/endpoints";
 import { getServerSideURL } from "./utilities/getURL";
 
 const filename = fileURLToPath(import.meta.url);
@@ -38,16 +31,6 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the welcome block with the "Seed your database" button.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ["@/components/BeforeDashboard"],
-      // Admins get a sidebar link to the site-wide list of apps that may act as users over MCP.
-      // Every user sees their own under "Connected apps" on their account.
-      afterNavLinks: ["@/components/ConnectedApps/NavLink#ConnectedAppsNavLink"],
-      views: {
-        connectedApps: {
-          Component: "@/components/ConnectedApps/View#ConnectedAppsView",
-          exact: true,
-          path: "/connected-apps",
-        },
-      },
     },
     // Payload 4's modular dashboard: editors can add, move and resize these widgets themselves
     dashboard: {
@@ -123,11 +106,6 @@ export default buildConfig({
     Tags,
     Comments,
     Users,
-    // Bookkeeping for the OAuth sign-in to /api/mcp. Hidden from the admin and every API.
-    OAuthClients,
-    OAuthAuthorizationCodes,
-    OAuthGrants,
-    OAuthTokens,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   email,
@@ -138,8 +116,6 @@ export default buildConfig({
       method: "get",
       handler: () => Response.json({ status: "ok" }),
     },
-    // The OAuth authorization server that lets ChatGPT and other MCP clients sign in as a user
-    ...oauthEndpoints,
   ],
   globals: [Header, Footer],
   plugins,

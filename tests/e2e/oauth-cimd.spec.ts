@@ -5,9 +5,9 @@ import {
   fetchClientMetadataDocument,
   isPublicAddress,
   metadataCacheTTL,
-} from '../../src/oauth/cimd'
-import { validateClientMetadata } from '../../src/oauth/clientMetadata'
-import { redirectUriMatches, validateRedirectUri } from '../../src/oauth/redirectUris'
+} from '../../src/plugins/mcp-oauth/server/cimd'
+import { validateClientMetadata } from '../../src/plugins/mcp-oauth/server/clientMetadata'
+import { redirectUriMatches, validateRedirectUri } from '../../src/plugins/mcp-oauth/server/redirectUris'
 
 /**
  * Client ID Metadata Documents need an HTTPS document on a public host, which the e2e server

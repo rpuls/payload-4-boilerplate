@@ -3,6 +3,13 @@ import type { Payload } from 'payload'
 import { getClientRedirectUris } from './clients'
 import { redirectUriHost } from './redirectUris'
 
+/**
+ * Who may see and revoke other users' connected apps. This template has a `roles` field with an
+ * `admin` value; adjust this one check if your users collection models roles differently.
+ */
+export const isAdminUser = (user: unknown): boolean =>
+  Boolean((user as null | undefined | { roles?: null | string[] })?.roles?.includes('admin'))
+
 /** A grant as shown in the "Connected apps" views, with nothing secret in it */
 export type ConnectedApp = {
   clientHost: null | string

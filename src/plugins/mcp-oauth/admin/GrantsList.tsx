@@ -4,7 +4,7 @@ import { Button, toast } from '@payloadcms/ui'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-import type { ConnectedApp } from '@/oauth/grants'
+import type { ConnectedApp } from '../server/grants'
 
 type Props = {
   apiRoute: string

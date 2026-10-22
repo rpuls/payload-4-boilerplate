@@ -1,9 +1,6 @@
-import { metadataPreflight, metadataResponse } from '@/oauth/metadataResponse'
-import { getAuthorizationServerMetadata } from '@/oauth/urls'
+// OAuth discovery for /api/mcp (see src/plugins/mcp-oauth). Read env per request, not at build.
+import { authorizationServerMetadata } from '@/plugins/mcp-oauth/next/wellKnown'
 
-// Some MCP clients build the authorization server metadata URL from the MCP endpoint path
-// instead of the issuer. Serve the same document there too.
 export const dynamic = 'force-dynamic'
-
-export const GET = () => metadataResponse(getAuthorizationServerMetadata())
-export const OPTIONS = () => metadataPreflight()
+export const GET = authorizationServerMetadata.GET
+export const OPTIONS = authorizationServerMetadata.OPTIONS

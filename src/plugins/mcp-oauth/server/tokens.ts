@@ -22,6 +22,9 @@ export const relationId = <T extends number | string>(
 export const sameId = (a: unknown, b: unknown): boolean =>
   a !== null && a !== undefined && b !== null && b !== undefined && String(a) === String(b)
 
+/** The auth collection the tokens act as (`admin.user` in the Payload config) */
+const userCollection = (payload: Payload) => payload.config.admin.user as 'users'
+
 export type TokenResponse = {
   access_token: string
   expires_in: number
@@ -275,14 +278,15 @@ export const authenticateAccessToken = async ({
         })
   if (!grant || grant.revokedAt) return { ok: false, reason: 'Access has been revoked' }
 
+  const users = userCollection(payload)
   const userId = relationId(record.user)
   const user =
     userId === null
       ? null
       : await payload.findByID({
           id: userId,
-          collection: 'users',
-          depth: payload.collections.users.config.auth.depth ?? 0,
+          collection: users,
+          depth: payload.collections[users]?.config.auth.depth ?? 0,
           disableErrors: true,
           overrideAccess: true,
         })
@@ -302,7 +306,7 @@ export const authenticateAccessToken = async ({
       .catch((err: unknown) => payload.logger.warn({ err, msg: 'OAuth: could not update lastUsedAt' }))
   }
 
-  return { ok: true, user: { ...user, _strategy: 'oauth', collection: 'users' } }
+  return { ok: true, user: { ...user, _strategy: 'oauth', collection: users } }
 }
 
 let lastCleanup = 0
