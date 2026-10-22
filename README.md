@@ -193,3 +193,43 @@ This repo was ported from [payload-3-boilerplate](https://github.com/rpuls/paylo
     </picture>
   </a>
 </p>
+
+## Nestwell rentals
+
+Nestwell's home page and `/listings` show approved apartments. `/listings/[slug]`
+shows approved or rented apartments, including a rented notice, gallery and rental
+facts. Pending and rejected listings are not public. Header navigation includes
+Listings and List your apartment.
+
+Anyone can submit at `/list-your-apartment`. The multipart endpoint
+`POST /api/listing-submissions` validates required details, a honeypot, and up to
+six JPEG/PNG/WebP photos (10 MB each, with file signature checks). It bounds the
+request body to 61 MiB, creates media and a pending listing, and ignores visitor
+status, internal notes, slugs and media IDs. Failed submissions clean up their
+created media. Ensure any deployment request-size limit permits this upload size.
+
+In the admin, editors and admins can review listings and set their rental status.
+Only admins may delete listings. Landlord contacts and internal notes have
+staff-only field access. Status is indexed and available in the admin list's
+standard filter controls. Run committed migrations before production startup.
+
+MCP exposes listings for reading, creating and editing. Collection hooks prevent
+MCP operations from setting approved/rented status or deleting listings, even
+when the agent acts as an admin. These restrictions apply to MCP requests; staff
+admin/API sessions retain their role permissions. Agents should never be given
+human session credentials. Listing instructions require honest, verified details.
+
+Additional integration checks (use a disposable database ending in `_test`):
+
+```bash
+DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/nestwell_test NODE_ENV=production corepack pnpm migrate
+DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/nestwell_test NODE_ENV=production corepack pnpm payload run tests/integration/listings.ts
+# Against a disposable running development instance; creates pending test submissions:
+node tests/integration/submissions.mjs
+```
+
+The collection integration check expects an empty listings collection and verifies
+public visibility, private fields, editor/admin permissions and MCP guards. The
+submission check exercises a bundled real image, forged status, honeypot and file
+validation. Continue to run the existing `corepack pnpm test:e2e` suite for seeded
+content, comments and OAuth; it requires the pinned MinIO Docker images.

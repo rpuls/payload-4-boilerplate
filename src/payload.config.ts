@@ -4,6 +4,7 @@ import path from "path";
 import { buildConfig, PayloadRequest } from "payload";
 import { fileURLToPath } from "url";
 
+import { Listings } from "./collections/Listings";
 import { Categories } from "./collections/Categories";
 import { Comments } from "./collections/Comments";
 import { Media, mediaSharpOptions } from "./collections/Media";
@@ -99,6 +100,7 @@ export default buildConfig({
         },
       ],
     },
+    Listings,
     Pages,
     Posts,
     Media,

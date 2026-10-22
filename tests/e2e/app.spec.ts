@@ -1,4 +1,11 @@
-import { expect, test, type APIRequestContext, type Browser, type Locator, type Page } from '@playwright/test'
+import {
+  expect,
+  test,
+  type APIRequestContext,
+  type Browser,
+  type Locator,
+  type Page,
+} from '@playwright/test'
 
 import {
   adminEmail,
@@ -67,7 +74,10 @@ async function createFirstAdmin(page: Page) {
   await fillFirst(page.getByLabel('New Password'), adminPassword)
   await fillFirst(page.getByLabel('Confirm Password'), adminPassword)
 
-  await page.getByRole('button', { name: /create|continue/i }).first().click()
+  await page
+    .getByRole('button', { name: /create|continue/i })
+    .first()
+    .click()
 
   await expect(page.getByRole('button', { name: /seed your database/i })).toBeVisible({
     timeout: 30000,
@@ -92,7 +102,10 @@ async function approveCommentInAdmin(page: Page, commentID: string) {
   const statusField = page.locator('#field-status')
   await statusField.click()
   await page.getByRole('option', { name: 'Approved' }).click()
-  await page.getByRole('button', { name: /^save$/i }).first().click()
+  await page
+    .getByRole('button', { name: /^save$/i })
+    .first()
+    .click()
   await expect(page.getByText(/updated successfully|saved successfully/i).first()).toBeVisible()
 }
 
@@ -107,10 +120,9 @@ test('first user becomes an admin and can seed the database', async ({ browser }
   await expect(adminPage.getByText('Comments waiting for review')).toBeVisible()
 
   // New owners land in /admin, so the dashboard links prominently to the website itself
-  await expect(adminPage.getByRole('link', { name: /visit your website/i }).first()).toHaveAttribute(
-    'href',
-    '/',
-  )
+  await expect(
+    adminPage.getByRole('link', { name: /visit your website/i }).first(),
+  ).toHaveAttribute('href', '/')
 
   await adminPage.getByRole('button', { name: /seed your database/i }).click()
   await expect(adminPage.getByText(/database seeded!/i)).toBeVisible({ timeout: 180000 })
@@ -119,9 +131,9 @@ test('first user becomes an admin and can seed the database', async ({ browser }
 test('seeded posts render publicly with tags and comments', async ({ browser }) => {
   publicPage = await newPage(browser)
 
-  // The newest post is featured in the home page's "Latest posts" block
+  // Nestwell now leads with rentals; seeded posts remain available at /posts.
   await publicPage.goto('/')
-  await expect(publicPage.getByText(featuredPost.title).first()).toBeVisible()
+  await expect(publicPage.getByRole('heading', { name: 'Find your next home' })).toBeVisible()
 
   // Seeded images render on the website, not only in the admin
   for (const url of ['/', `/posts/${featuredPost.slug}`]) {
@@ -270,4 +282,90 @@ test('AI agents can use the MCP endpoint with a user API key', async () => {
   })
   expect(response.ok()).toBeTruthy()
   expect(await response.text()).toContain(`Published posts: ${seededPosts.length}`)
+})
+
+test('Nestwell submissions need human approval and never expose landlord details', async () => {
+  const title = 'Nestwell browser apartment'
+  await publicPage.goto('/list-your-apartment')
+  for (const [name, value] of Object.entries({
+    title,
+    monthlyRent: '1500',
+    deposit: '1500',
+    availableFrom: '2027-01-01',
+    streetAddress: '1 Nestwell Street',
+    city: 'Bristol',
+    size: '75',
+    rooms: '3',
+    description: 'A bright apartment with an honest description.',
+    landlordName: 'Private Landlord',
+    landlordEmail: 'landlord-private@example.com',
+    landlordPhone: '01234567890',
+  })) {
+    await publicPage.locator(`[name="${name}"]`).fill(value)
+  }
+  await publicPage
+    .locator('[name="photos"]')
+    .setInputFiles('src/endpoints/seed/assets/payload-cover.webp')
+  await publicPage.getByRole('button', { name: 'Submit apartment for review' }).click()
+  await expect(publicPage.getByRole('status')).toContainText('Our team will review it')
+  const staffResponse = await adminPage.request.get('/api/listings', {
+    params: { 'where[title][equals]': title },
+  })
+  const listing = (await staffResponse.json()).docs[0]
+  expect(listing.status).toBe('pending')
+  expect(listing.photos).toHaveLength(1)
+  const pending = await publicPage.request.get(`/listings/${listing.slug}`)
+  expect(pending.status()).toBe(404)
+  expect(
+    (
+      await publicPage.request.post('/api/listing-submissions', { multipart: { website: 'spam' } })
+    ).status(),
+  ).toBe(400)
+
+  const me = await (await adminPage.request.get('/api/users/me')).json()
+  const apiKey = `nestwell-${Date.now()}`
+  expect(
+    (await adminPage.request.patch(`/api/users/${me.user.id}`, { data: { apiKey } })).ok(),
+  ).toBeTruthy()
+  for (const status of ['approved', 'rented']) {
+    const result = await publicPage.request.post('/api/mcp', {
+      headers: {
+        Accept: 'application/json, text/event-stream',
+        Authorization: `users API-Key ${apiKey}`,
+      },
+      data: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tools/call',
+        params: {
+          name: 'updateDocument',
+          arguments: { slug: 'listings', id: String(listing.id), data: { status } },
+        },
+      },
+    })
+    expect(await result.text()).toContain('Only human staff')
+  }
+  expect(
+    (
+      await adminPage.request.patch(`/api/listings/${listing.id}`, {
+        data: { status: 'approved', internalNotes: 'Never public' },
+      })
+    ).ok(),
+  ).toBeTruthy()
+  const publicListing = await (await publicPage.request.get(`/api/listings/${listing.id}`)).json()
+  for (const field of ['landlordName', 'landlordEmail', 'landlordPhone', 'internalNotes'])
+    expect(publicListing[field]).toBeUndefined()
+  await publicPage.goto('/')
+  await expect(publicPage.getByRole('heading', { name: title })).toBeVisible()
+  await publicPage.goto(`/listings/${listing.slug}`)
+  await expect(publicPage.getByRole('heading', { name: title })).toBeVisible()
+  expect(await brokenImages(publicPage, `/listings/${listing.slug}`)).toEqual([])
+  expect(
+    (
+      await adminPage.request.patch(`/api/listings/${listing.id}`, { data: { status: 'rented' } })
+    ).ok(),
+  ).toBeTruthy()
+  await publicPage.reload()
+  await expect(publicPage.getByText(/no longer available/)).toBeVisible()
+  expect((await adminPage.request.delete(`/api/listings/${listing.id}`)).ok()).toBeTruthy()
 })

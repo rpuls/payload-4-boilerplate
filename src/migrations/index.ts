@@ -1,5 +1,6 @@
 import * as migration_20261017_160636_initial from './20261017_160636_initial';
 import * as migration_20261022_202749_oauth from './20261022_202749_oauth';
+import * as migration_20261022_231728_nestwell_listings from './20261022_231728_nestwell_listings';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20261022_202749_oauth.up,
     down: migration_20261022_202749_oauth.down,
-    name: '20261022_202749_oauth'
+    name: '20261022_202749_oauth',
+  },
+  {
+    up: migration_20261022_231728_nestwell_listings.up,
+    down: migration_20261022_231728_nestwell_listings.down,
+    name: '20261022_231728_nestwell_listings'
   },
 ];
