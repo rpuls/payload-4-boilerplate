@@ -1,7 +1,18 @@
-import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import type {
+  CollectionBeforeChangeHook,
+  CollectionBeforeDeleteHook,
+  CollectionConfig,
+} from 'payload'
+
+import { deleteOAuthDataForUser } from '@/oauth/tokens'
 
 import { authenticated } from '../../access/authenticated'
 import { isAdmin, isAdminFieldLevel, isAdminOrSelf } from '../../access/roles'
+
+/** A deleted user's connected apps must not keep acting as them */
+const removeConnectedApps: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  await deleteOAuthDataForUser(req.payload, id, req)
+}
 
 /**
  * The very first account (created on /admin/create-first-user) always becomes an admin.
@@ -67,9 +78,23 @@ export const Users: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      // AI assistants (e.g. ChatGPT) the user has allowed to act as them over MCP, with a
+      // "Revoke" button each. Admins see this on every user; everyone sees their own account.
+      name: 'connectedApps',
+      type: 'ui',
+      label: 'Connected apps',
+      admin: {
+        components: {
+          Field: '@/components/ConnectedApps/Field#ConnectedAppsField',
+        },
+        condition: (data, _siblingData, { user }) => Boolean(user) && Boolean(data?.id),
+      },
+    },
   ],
   hooks: {
     beforeChange: [makeFirstUserAdmin],
+    beforeDelete: [removeConnectedApps],
   },
   // Tracking which user created which user adds nothing here
   authorship: false,
