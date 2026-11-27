@@ -28,7 +28,9 @@ plugins: [/* ... */, mcp, mcpOAuthPlugin()]
 ```
 
 The plugin runs before `@payloadcms/plugin-mcp` and sets that plugin's `overrideGetAuthorizedMCP`,
-so `src/plugins/mcp.ts`, the Users collection and `payload.config.ts` stay stock. It adds:
+so `src/plugins/mcp.ts`, the Users collection and `payload.config.ts` stay stock. It also sets the
+MCP plugin's `oauth` option to `false`, which switches off the OAuth server the MCP plugin ships
+with since 4.0.0-beta.8, so there is only one sign-in flow. It adds:
 
 - four hidden collections (`oauth-clients`, `oauth-authorization-codes`, `oauth-grants`,
   `oauth-tokens`), unreachable over REST, GraphQL and MCP

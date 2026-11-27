@@ -28,13 +28,13 @@ It is the Payload 4 sibling of the [Payload 3 boilerplate](https://github.com/rp
 
 ## Version Info
 
-- **Payload CMS**: `4.0.0-beta.2` (all `@payloadcms/*` packages on the same version)
-- **Next.js**: `16.4.2`
+- **Payload CMS**: `4.0.0-beta.12` (all `@payloadcms/*` packages on the same version)
+- **Next.js**: `16.4.6`
 - **React**: `19.3.1`
-- **Node.js**: `>=24.15.0` (`.node-version` pins Node 24 for Railway)
-- **pnpm**: `10.26.0`
+- **Node.js**: `^24.22.3 || >=26.13.1` (`.node-version` pins Node 24 for Railway)
+- **pnpm**: `10.34.9`
 - **TypeScript**: `6.0.3`
-- **Playwright**: `1.63.0`
+- **Playwright**: `1.65.1`
 - **PostgreSQL**: 17 for local development and e2e (Docker), Railway's PostgreSQL template in production
 
 ## What's included
@@ -173,7 +173,7 @@ Make sure Docker is running, then:
 ## Requirements
 
 - **Database**: PostgreSQL
-- **Node.js**: 24.15 or newer
+- **Node.js**: 24.22.3 or newer on the 24 line, or 26.13.1+
 - **Docker**: for local PostgreSQL, the optional MinIO bucket and the e2e suite
 
 ## Useful Resources
